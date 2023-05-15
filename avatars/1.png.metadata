@@ -1,0 +1,8 @@
+{ 
+  "name":"DemoNFTs #1",
+  "description":"girl", 
+  "image":"ipfs://bafybeiegnhgpfeu2foknh2fvrfnql3lfyneyuenoincogrl473lfr6m2ym/1.png", 
+  "attributes":[ 
+    { "trait_type":"hair", "value":"brown" }
+  ] 
+}

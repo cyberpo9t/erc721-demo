@@ -1,0 +1,50 @@
+import { NFTStorage, File } from "nft.storage";
+import mime from "mime";
+import fs from "fs";
+import path from "path";
+
+// require("dotenv").config();
+
+// const NFT_STORAGE_KEY = process.env.NFT_STORAGE_KEY || "";
+const NFT_STORAGE_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGYyNjUyOEE1MDc0YjQ3YTg4ZjU0Njc3ZjcwMDRBZTk0NTlGMzc2OTkiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY4MjA2MTM5NzQyOSwibmFtZSI6ImxlYXJuaW5nIn0.zvs46Xds8umMaveiUE0P5zo45fUcXbizbtu-XcPgweE";
+
+async function storeNFT(avatarPath, name, description) {
+    // avatarPath = "./avatars/1.png";
+    // name = "DemoNFTs #1";
+    // description = "girl";
+    const avatar = await fileFromPath(avatarPath);
+    const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY });
+    const response = await nftstorage.store({
+        avatar,
+        name,
+        description,
+    });
+    console.log(`NFT ${response.data.name} uploaded: ${response.url}`);
+    return response;
+}
+
+async function fileFromPath(filePath) {
+    const content = await fs.promises.readFile(filePath);
+    const type = mime.getType(filePath);
+    return new File([content], path.basename(filePath), { type });
+}
+
+async function main() {
+    const args = process.argv.slice(2);
+    if (args.length !== 3) {
+        console.error(
+            `usage: ${process.argv[0]} ${process.argv[1]} <image-path> <name> <description>`
+        );
+        process.exit(1);
+    }
+
+    const [imagePath, name, description] = args;
+    const result = await storeNFT(imagePath, name, description);
+    console.log(result);
+}
+
+main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
